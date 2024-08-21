@@ -15,10 +15,12 @@ import { useRouter } from 'expo-router';
 import auth from '@react-native-firebase/auth';
 import { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function HomeScreen() {
   const router = useRouter();
   const focused = useIsFocused();
+  const { rewardCoins, streakDays } = useAuth();
   const [user, setUser] = useState('');
   const [email, setEmail] = useState('');
   useEffect(() => {
@@ -35,8 +37,9 @@ export default function HomeScreen() {
 
   const onCardPress = ({ item }: any) => {
     router.push({
-      pathname: '/meditate/streak',
+      pathname: '/meditate/meditation',
       params: {
+        id: item.id?.toString(),
         duration: item?.duration?.toString()
       }
     })
@@ -57,11 +60,11 @@ export default function HomeScreen() {
               </View>
               <View style={styles.iconItem}>
                 <StreakIcon style={styles.icon} />
-                <Text style={styles.iconText}>0</Text>
+                <Text style={styles.iconText}>{streakDays}</Text>
               </View>
               <View style={styles.iconItem}>
                 <CoinsIcon style={styles.icon} />
-                <Text style={styles.iconText}>0</Text>
+                <Text style={styles.iconText}>{rewardCoins}</Text>
               </View>
               <View style={styles.iconItem}>
                 <BellIcon style={styles.icon} />
@@ -85,7 +88,7 @@ export default function HomeScreen() {
         <View style={styles.dailyView}>
           <View style={styles.dailyTextView}>
             <Text style={styles.dailyText}>Daily Routine</Text>
-            <Text>0</Text>
+            <Text>{rewardCoins}</Text>
           </View>
           <View style={styles.iconsView}>
             <RefreshIcon />

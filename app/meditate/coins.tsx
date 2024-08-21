@@ -3,10 +3,12 @@ import { View, Text, StyleSheet, Pressable, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BigCoinIcon from '@/assets/images/bigCoin.svg';
 import CoinsIcon from '@/assets/images/coins.svg';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 export default function CoinsScreen({ streakDays = 1 }) {
     const router = useRouter();
+    const params = useLocalSearchParams();
+    const { id } = params;
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={'rgba(224, 243, 224, 0.5)'} />
@@ -23,7 +25,10 @@ export default function CoinsScreen({ streakDays = 1 }) {
             </View>
             <Pressable style={styles.continueButton} onPress={() => {
                 router.push({
-                    pathname: '/meditate/rewards'
+                    pathname: '/meditate/rewards',
+                    params: {
+                        id
+                    }
                 })
             }}>
                 <Text style={styles.continueButtonText}>Continue</Text>

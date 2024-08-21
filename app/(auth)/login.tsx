@@ -8,7 +8,7 @@ import GoogleIcon from '@/assets/images/google.svg';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import { WEB_CLIENT_ID } from '@/constants';
-import { useToast } from '@/providers/ToastProvider';
+import Toast from 'react-native-toast-message';
 
 GoogleSignin.configure({
     webClientId: WEB_CLIENT_ID,
@@ -17,7 +17,6 @@ GoogleSignin.configure({
 export default function LoginScreen() {
     const { setToken } = useAuth();
     const router = useRouter();
-    const { showToast } = useToast();
 
     async function onGoogleButtonPress() {
         try {
@@ -28,12 +27,16 @@ export default function LoginScreen() {
             // Create a Google credential with the token
             const googleCredential = auth.GoogleAuthProvider.credential(idToken);
             setToken(googleCredential.token);
-            showToast('Login successful!');
 
             // Sign-in the user with the credential
             return auth().signInWithCredential(googleCredential);
         } catch (error) {
-            showToast(error?.message)
+            Toast.show({
+                swipeable: true,
+                text1: error?.message,
+                text1Style: { color: 'red', fontSize: 16, fontWeight: '700' },
+                type: 'error',
+            });
             console.log({ error })
         }
     }

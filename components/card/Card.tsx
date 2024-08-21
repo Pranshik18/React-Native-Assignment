@@ -2,15 +2,19 @@ import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 import React from 'react';
 import { ThemedView } from '../ThemedView';
 import { ThemedText } from '../ThemedText';
+import Tick from '@/assets/images/tick.svg'
 import FeatherIcon from '@expo/vector-icons/Feather';
+import { useAuth } from '@/providers/AuthProvider';
 
 const Card = ({ item, onPress, index }: any) => {
-    const isMorningRoutineIndex = item.name.includes('Morning') && index === 0;
+    const { completedExercises } = useAuth();
+    const isCompleted = completedExercises[item.id] || false;
+    const isMorningRoutineIndex = true;
     return (
         <Pressable style={[styles.item, { backgroundColor: item?.cardColor }]} onPress={onPress}>
             <View style={styles.circleContainer}>
                 {isMorningRoutineIndex ? <View style={styles.outerCircle}>
-                    <View style={styles.innerCircle} />
+                    {!isCompleted ? <View style={styles.innerCircle} /> : <Tick />}
                 </View> :
                     <View style={styles.innerCircle} />
                 }

@@ -10,6 +10,7 @@ import ThreeDotLoader from '@/components/loader/Loader';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { WEB_CLIENT_ID } from '@/constants';
 import { ToastProvider } from '@/providers/ToastProvider';
+import Toast from 'react-native-toast-message';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -44,6 +45,7 @@ export default function RootLayout() {
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} backgroundColor={'rgba(224, 243, 224, 0.5)'} />
           <AppNavigator />
+          <Toast />
         </ThemeProvider>
       </AuthProvider>
     </ToastProvider>

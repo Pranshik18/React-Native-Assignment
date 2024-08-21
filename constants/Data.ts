@@ -7,6 +7,7 @@ export const ExerciseRoutines = [
         title: 'Morning',
         data: [
             {
+                id: 1,
                 name: 'Morning Meditation 1',
                 description: 'Affirmation for day',
                 duration: 6,
@@ -16,6 +17,7 @@ export const ExerciseRoutines = [
                 finish: false,  // Add finish key
             },
             {
+                id: 2,
                 name: 'Morning Meditation 2',
                 description: 'Affirmation for day',
                 duration: 6,
@@ -30,6 +32,7 @@ export const ExerciseRoutines = [
         title: 'Afternoon',
         data: [
             {
+                id: 3,
                 name: 'Afternoon Meditation 1',
                 description: 'Affirmation for day',
                 duration: 6,
@@ -39,6 +42,7 @@ export const ExerciseRoutines = [
                 finish: false,  // Add finish key
             },
             {
+                id: 4,
                 name: 'Afternoon Meditation 2',
                 description: 'Affirmation for day',
                 duration: 6,
@@ -53,6 +57,7 @@ export const ExerciseRoutines = [
         title: 'Evening',
         data: [
             {
+                id: 5,
                 name: 'Evening Meditation 1',
                 description: 'Affirmation for day',
                 duration: 6,
@@ -62,6 +67,7 @@ export const ExerciseRoutines = [
                 finish: false,  // Add finish key
             },
             {
+                id: 6,
                 name: 'Evening Meditation 2',
                 description: 'Affirmation for day',
                 duration: 6,

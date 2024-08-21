@@ -1,20 +1,44 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import CoinIcon from '@/assets/images/Coin.svg';
 import CoinSaver from '@/assets/images/coinsSaver.svg';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { ExerciseRoutines } from '@/constants/Data';
+import { useAuth } from '@/providers/AuthProvider';
 
 const Rewards = () => {
     const router = useRouter();
+    const params = useLocalSearchParams();
+    const { id } = params;
+    console.log({ id })
+    const { setReward, rewardCoins, completeExercise, completedExercises } = useAuth();
+
+    useEffect(() => {
+        if (id) {
+            const exerciseId = Number(id);
+            const isCompleted = completedExercises[exerciseId];
+
+            console.log('Checking exercise completion:', {
+                exerciseId,
+                isCompleted,
+                completedExercises,
+            });
+
+            if (!isCompleted) {
+                // Increase reward coins if the exercise is not completed
+                setReward(rewardCoins + 10);
+                // Mark the exercise as completed
+                completeExercise(exerciseId);
+            }
+        }
+    }, [id]);
 
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
-                <View style={styles.iconContainer}>
+                <Pressable style={styles.iconContainer} onPress={() => router.replace('/(tabs)/')}>
                     <Ionicons name="chevron-back" size={20} color="#394B42" />
-                </View>
+                </Pressable>
                 <Text style={styles.headerText}>My Rewards</Text>
                 <View style={styles.emptyView} />
             </View>
@@ -29,9 +53,7 @@ const Rewards = () => {
                 <CoinSaver />
             </View>
             <Pressable style={styles.continueButton} onPress={() => {
-                router.replace({
-                    pathname: '/(tabs)/'
-                });
+                router.replace('/(tabs)/'); // Navigate to home
             }}>
                 <Text style={styles.continueButtonText}>Go to home</Text>
             </Pressable>

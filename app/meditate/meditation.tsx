@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Share, StatusBar } from 'react-native';
 import Slider from '@react-native-community/slider';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
+import { useLocalSearchParams, useRouter } from 'expo-router'; // Import useRouter
 import PlayIcon from '@/assets/images/playIcon.svg';
 import PauseIcon from '@/assets/images/pauseIcon.svg';
 import BearIcon from '@/assets/images/meditateBear.svg';
@@ -10,13 +11,18 @@ import BackIcon from '@/assets/images/backwardStep.svg';
 import ForwardIcon from '@/assets/images/sloth.svg';
 import { formatTime } from '@/utils';
 
-export const TimerScreen = ({ duration = 6 * 60 }) => {
-    const [isPlaying, setIsPlaying] = useState(false);
+export default function TimerScreen() {
+    const params = useLocalSearchParams();
+    const { duration: durationStr, id } = params;
+    // Convert duration from minutes (string) to seconds
+    const duration = parseInt(durationStr as string, 10) * 60;
+    const [isPlaying, setIsPlaying] = useState(true);
     const [elapsedTime, setElapsedTime] = useState(0);
     const [breathingPhase, setBreathingPhase] = useState('Inhale');
     const progress = useSharedValue(0);
     const circleSize = useSharedValue(150);
     const translateY = useSharedValue(0); // Shared value for Y translation
+    const router = useRouter(); // Initialize useRouter
 
     useEffect(() => {
         let interval;
@@ -24,12 +30,25 @@ export const TimerScreen = ({ duration = 6 * 60 }) => {
         if (isPlaying) {
             interval = setInterval(() => {
                 setElapsedTime((prevTime) => {
-                    if (prevTime >= duration) {
+                    const newTime = prevTime + 1;
+                    if (newTime >= duration) {
                         clearInterval(interval);
                         setIsPlaying(false);
                         return duration;
                     }
-                    return prevTime + 1;
+                    // Check if 80% of the timer has elapsed
+                    if (newTime >= 0.8 * duration) {
+                        clearInterval(interval);
+                        setIsPlaying(false);
+                        router.push({
+                            pathname: '/meditate/streak',
+                            params: {
+                                id
+                            }
+                        }); // Navigate to Rewards screen
+                        return duration;
+                    }
+                    return newTime;
                 });
             }, 1000);
         } else if (!isPlaying && elapsedTime !== 0) {
@@ -37,7 +56,7 @@ export const TimerScreen = ({ duration = 6 * 60 }) => {
         }
 
         return () => clearInterval(interval);
-    }, [isPlaying, elapsedTime]);
+    }, [isPlaying, elapsedTime, duration, router]); // Added router
 
     useEffect(() => {
         progress.value = withTiming(elapsedTime / duration, { duration: 1000 });

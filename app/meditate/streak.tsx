@@ -1,15 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StreakIcon from '@/assets/images/streakDone.svg';
 import TickIcon from '@/assets/images/check.svg';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useAuth } from '@/providers/AuthProvider';
 
 const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-export default function StreakScreen({ streakDays = 1 }) {
+export default function StreakScreen() {
     const router = useRouter();
+    const params = useLocalSearchParams();
+    const { id } = params;
+    const { streakDays, updateStreak, completedDays, setCompletedDays } = useAuth(); // Include setCompletedDays
     const currentDayIndex = new Date().getDay() - 1; // Sunday is 0, adjust to 0-6 (Mon-Sun)
+    const currentDateString = new Date().toDateString();
+
+    useEffect(() => {
+        const updateCurrentDayStreak = () => {
+            if (!completedDays?.includes(currentDateString)) {
+                // Increase streakDays if today is not completed
+                updateStreak(streakDays + 1);
+                setCompletedDays([...completedDays, currentDateString]); // Add current day to completedDays
+            }
+        };
+
+        updateCurrentDayStreak();
+    }, [completedDays, streakDays, updateStreak, setCompletedDays, currentDateString]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -24,8 +41,8 @@ export default function StreakScreen({ streakDays = 1 }) {
                     {daysOfWeek.map((day, index) => (
                         <View key={index} style={styles.dayContainer}>
                             <Text style={[styles.dayText, { color: index === currentDayIndex ? '#49AF7C' : '#394B42' }]}>{day}</Text>
-                            <View style={[styles.circle, { backgroundColor: index === currentDayIndex ? 'green' : 'transparent' }]}>
-                                {index === currentDayIndex && <TickIcon />}
+                            <View style={[styles.circle, { backgroundColor: index === currentDayIndex ? '#49AF7C' : 'transparent' }]}>
+                                {index === currentDayIndex && <TickIcon width={16} height={16} />}
                             </View>
                         </View>
                     ))}
@@ -33,7 +50,12 @@ export default function StreakScreen({ streakDays = 1 }) {
                 <View style={styles.separator} />
                 <Text style={styles.streakResetText}>Streak will reset if you don’t practice tomorrow.</Text>
             </View>
-            <Pressable style={styles.continueButton} onPress={() => router.push('/meditate/coins')}>
+            <Pressable style={styles.continueButton} onPress={() => router.push({
+                pathname: '/meditate/coins',
+                params: {
+                    id
+                }
+            })}>
                 <Text style={styles.continueButtonText}>Continue</Text>
             </Pressable>
         </SafeAreaView>
