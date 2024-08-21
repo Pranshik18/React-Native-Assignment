@@ -10,16 +10,12 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-
    SETUP INSTRUCTIONS:
 
-   1. after installing node modules run npx expo run:android
+   1. after installing node modules run
+   ```bash
+   npx expo run:android
+   ```
    2. switch to development build after build successful.
 
    That's it!
